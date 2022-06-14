@@ -93,36 +93,49 @@ public class ClientDAO {
 		return null;
 	}
 
-	public void deleteClient(int id) {
+	public boolean deleteClient(int id) {
 		String sql = "delete from clients where id = ?";
 		
 		try(Connection conn = cu.getConnection()){
+			
+			if (getClientById(id) == null) {
+				return false;
+			}
+			
+			
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, id);
 			ps.execute();
-			
+			return true;
 		} catch(SQLException e) {
 			e.printStackTrace();
+			
 		}
+		return false;
 	}
 
-	public void updateClient(int id, Client cChanged) {
+	public  boolean updateClient(int id, Client cChanged) {
 		String sql = "update clients set username = ?, pass_word = ? where id = ?";
+		
 		try(Connection conn = cu.getConnection()){
+			
+			if (getClientById(id) == null) {
+				return false;
+			}
+			
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, cChanged.getUsername());
 			ps.setString(2, cChanged.getpass_word());
 			ps.setInt(3, id);
 			
 			ps.executeUpdate();
+			return true;
 			
 			
 			
 		}catch(SQLException e){
 			e.printStackTrace();
-		}
-		
-		
+		}return false;
 	}
 	
 	

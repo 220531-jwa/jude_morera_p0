@@ -19,9 +19,9 @@ public class ClientService {
 	public Client getClientById(int id) throws Exception {
 		Client c = clientDAO.getClientById(id);
 		
-		if (c == null) {
-			throw new Exception ("Client not found");
-		}
+//		if (c == null) {
+//			throw new Exception ("Client not found");
+//		}
 		
 		
 		return c;
@@ -33,13 +33,13 @@ public class ClientService {
 		return createdClient;
 	}
 
-	public void deleteClient(int id) {
-		clientDAO.deleteClient(id);
+	public boolean deleteClient(int id) {
+		return clientDAO.deleteClient(id);
 		
 	}
 
-	public void updateClient(int id,Client cChanged) {
-		clientDAO.updateClient(id, cChanged);
+	public boolean updateClient(int id,Client cChanged) {
+		return(clientDAO.updateClient(id, cChanged));
 		
 	}
 	

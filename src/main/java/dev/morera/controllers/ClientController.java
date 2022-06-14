@@ -25,29 +25,53 @@ public class ClientController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		ctx.status(200);
-		ctx.json(c);
+		if (c != null) {
+			ctx.status(200);
+			ctx.json(c);
+		}
+		else {
+			ctx.status(404);
+		}
 	}
 
 	public static void createNewClient(Context ctx) {
-		ctx.status(201);
+		
 		Client clientFromReqBody = ctx.bodyAsClass(Client.class);
 		Client c = cs.createClient(clientFromReqBody);
-		ctx.json(c);
+		if (c != null) {
+			ctx.json(c);
+			ctx.status(201);	
+		}
+		else {
+			ctx.status(500); //TODO: get proppa status
+		}
+		
 	}
-//TODO: status code logic
-	public static void deleteClient(Context ctx) {
+
+	public static void  deleteClient(Context ctx) {
 		int id = Integer.parseInt(ctx.pathParam("id"));
-		cs.deleteClient(id);
-		ctx.status(200);
+		if (cs.deleteClient(id)) {
+			ctx.status(205);
+		}
+		else {
+			ctx.status(404);
+		}
 	}
-	//TODO: status code logic
+	
 	public static void updateClient(Context ctx) {
 		int id = Integer.parseInt(ctx.pathParam("id"));
 		Client cChanged = ctx.bodyAsClass(Client.class); //unmarshalling
+		
+		
+		
 		//System.out.println("updateClient -= " + cChanged);
-		cs.updateClient(id, cChanged);
-		ctx.json(cChanged);
+		if(cs.updateClient(id, cChanged)) {
+			ctx.status(201);
+		}
+		else {
+			ctx.status(404);
+		}
+		//ctx.json(cChanged);
 
 	}
 }//file
