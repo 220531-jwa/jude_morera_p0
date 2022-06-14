@@ -19,11 +19,16 @@ public class JavalinRunner {
 				post(ClientController::createNewClient);
 				path("/{id}" , () -> {
 					get(ClientController::getClientByID);
+					delete(ClientController::deleteClient);
+					put(ClientController::updateClient);
+					//patch(ClientController::updateClient);
 				});
 			});
 		});
-		
-		
+		//one method in accountService that checks if withdrawal/deposit
+		/* TODO: logics
+		 * 
+		 */
 	}
 
 }

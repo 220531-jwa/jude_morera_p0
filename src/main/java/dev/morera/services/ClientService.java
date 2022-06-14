@@ -5,6 +5,9 @@ import java.util.List;
 import dev.morera.models.Client;
 import dev.morera.repositories.ClientDAO;
 
+//todo: check if owned???
+
+
 public class ClientService {
 
 	private static ClientDAO clientDAO = new ClientDAO();
@@ -28,6 +31,16 @@ public class ClientService {
 	
 		Client createdClient = clientDAO.createClient(clientFromReqBody);
 		return createdClient;
+	}
+
+	public void deleteClient(int id) {
+		clientDAO.deleteClient(id);
+		
+	}
+
+	public void updateClient(int id,Client cChanged) {
+		clientDAO.updateClient(id, cChanged);
+		
 	}
 	
 }

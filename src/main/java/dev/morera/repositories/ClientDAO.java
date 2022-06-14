@@ -10,6 +10,8 @@ import dev.morera.utils.ConnectionUtility;
 
 public class ClientDAO {
 
+	// TODO: make checks here, pass up to SERVICE if issue
+	
 	private static ConnectionUtility cu = ConnectionUtility.getConnectionUtility();
 
 	public List<Client> getAllClients(){
@@ -91,4 +93,39 @@ public class ClientDAO {
 		return null;
 	}
 
-}
+	public void deleteClient(int id) {
+		String sql = "delete from clients where id = ?";
+		
+		try(Connection conn = cu.getConnection()){
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, id);
+			ps.execute();
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void updateClient(int id, Client cChanged) {
+		String sql = "update clients set username = ?, pass_word = ? where id = ?";
+		try(Connection conn = cu.getConnection()){
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, cChanged.getUsername());
+			ps.setString(2, cChanged.getpass_word());
+			ps.setInt(3, id);
+			
+			ps.executeUpdate();
+			
+			
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		
+		
+	}
+	
+	
+	
+
+}//file
