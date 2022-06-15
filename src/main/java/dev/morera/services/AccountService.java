@@ -13,16 +13,25 @@ public class AccountService {
 		return accountDAO.getAllAccounts();
 	}
 
-	public List<Account> getAccountsFromClient(int id) {
-		return accountDAO.getAccountsFromClient(id);
+	public List<Account> getAccountsFromClient(int id, String greater, String lesser) {
+		return accountDAO.getAccountsFromClient(id, greater, lesser);
 		
 		
 	}
 
-	public Account createAccount(Account accountFromReqBody) {
+	public Account createAccount(int id, Account accountFromReqBody) {
 
-		Account createdAccount = accountDAO.createAccount(accountFromReqBody);
+		Account createdAccount = accountDAO.createAccount(id, accountFromReqBody);
 		return createdAccount;
+	}
+
+	public Account getSpecAccount(int id, int aid) {
+		return accountDAO.getSpecAccount(id, aid);
+		
+	}
+
+	public boolean updateAccount(int id, int aid, Account aChanged) {
+		return accountDAO.updateAccount(id, aid, aChanged);
 	}
 	
 }

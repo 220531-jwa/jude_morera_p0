@@ -5,23 +5,23 @@ package dev.morera.javalin;
  * 
  * POST /clients => Creates a new client return a 201 status code
 
-GET /clients => gets all clients return 200
+-GET /clients => gets all clients return 200
 
-GET /clients/10 => get client with id of 10 return 404 if no such client exist
+-GET /clients/10 => get client with id of 10 return 404 if no such client exist
 
-PUT /clients/12 => updates client with id of 12 return 404 if no such client exist
+-PUT /clients/12 => updates client with id of 12 return 404 if no such client exist
 
-DELETE /clients/15 => deletes client with the id of15 return 404 if no such client exist return 205 if success
+-DELETE /clients/15 => deletes client with the id of15 return 404 if no such client exist return 205 if success
 
-POST /clients/5/accounts =>creates a new account for client with the id of 5 return a 201 status code
+-POST /clients/5/accounts =>creates a new account for client with the id of 5 return a 201 status code
 
-GET /clients/7/accounts => get all accounts for client 7 return 404 if no client exists
+-GET /clients/7/accounts => get all accounts for client 7 return 404 if no client exists
 
 GET /clients/7/accounts?amountLessThan=2000&amountGreaterThan400 => get all accounts for client 7 between 400 and 2000 return 404 if no client exists
 
-GET /clients/9/accounts/4 => get account 4 for client 9 return 404 if no account or client exists
+-GET /clients/9/accounts/4 => get account 4 for client 9 return 404 if no account or client exists
 
-PUT /clients/10/accounts/3 => update account with the id 3 for client 10 return 404 if no account or client exists
+-PUT /clients/10/accounts/3 => update account with the id 3 for client 10 return 404 if no account or client exists
 
 DELETE /clients/15/accounts/6 => delete account 6 for client 15 return 404 if no account or client exists
 
@@ -55,18 +55,23 @@ public class JavalinRunner {
 					delete(ClientController::deleteClient);
 					put(ClientController::updateClient);
 					//patch(ClientController::updateClient);
-					
+
 					path("/accounts", ()->{
 						get(AccountController::getAccountsFromClient);
-						
+						post(AccountController::createNewAccount);
+						path("/{aid}", () ->{
+							get(AccountController::getSpecAccount);
+							put(AccountController::updateSpecAccount);
+
+						});
 					});
 				});
 			});
 			//THIS IS WITHOUT PRECEDING CLIENTS
 			path("/accounts", () -> {
 				get(AccountController::getAllAccounts);
-				post(AccountController::createNewAccount);
-				
+
+
 			});
 		});
 		//one method in accountService that checks if withdrawal/deposit

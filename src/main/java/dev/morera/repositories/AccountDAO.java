@@ -50,16 +50,41 @@ public class AccountDAO {
 		}
 	}
 	
-	public List<Account> getAccountsFromClient(int passedId){
+	public List<Account> getAccountsFromClient(int passedId, String greater, String lesser){
 		List<Account> accounts = new ArrayList<>();
+		String sql  = "select * from accounts where owner_id = ?";
+		boolean hasG = false;
+		if (greater != null ) {
+			sql += " and balance > ?";
+			hasG = true;
+		}
+		if (lesser !=null ) {
+			sql += "and balance < ?";
+		}
 		
-		String sql = "select * from accounts where owner_id = ?";
-		
+//		else {
+//		 sql = "select * from accounts where owner_id = ?";
+//		}
 		
 		try (Connection conn = cu.getConnection()){
 
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, passedId);
+				
+			if (greater != null ) {
+				Double greaterSQL = Double.parseDouble(greater);
+				ps.setDouble(2, greaterSQL);
+			}//grt
+			if (lesser !=null ) {
+				Double lesserSQL = Double.parseDouble(lesser);
+				if (!hasG) {
+					ps.setDouble(2, lesserSQL);
+				}else {
+					ps.setDouble(3, lesserSQL);
+				}
+			}//less
+
+			
 			ResultSet rs = ps.executeQuery();
 
 			while(rs.next()) {
@@ -81,13 +106,16 @@ public class AccountDAO {
 			}
 			return accounts;
 
-		} catch(SQLException e) {
+		}//end try
+		catch(SQLException e) {
 			e.printStackTrace();
 		return null;
 		}
+		
+		
 	}
 
-	public Account createAccount(Account a) {
+	public Account createAccount(int passedId, Account a) {
 
 		String sql = "insert into Accounts values (default, ?, ?, ?) returning *";
 		
@@ -95,7 +123,7 @@ public class AccountDAO {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setBoolean(1, a.isSavings());
 			ps.setDouble(2, a.getBalance());
-			ps.setInt(3, a.getOwner_id());
+			ps.setInt(3, passedId);
 			
 			System.out.println(ps);
 			
@@ -116,6 +144,59 @@ public class AccountDAO {
 		
 		
 		return null;
+	}
+
+	public Account getSpecAccount(int passedId, int passedAid) {
+		
+		String sql = "select * from accounts where accounts.owner_id = ? and accounts.id = ? ";
+		
+		try (Connection conn = cu.getConnection()){
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, passedId);
+			ps.setInt(2, passedAid);
+			
+			ResultSet rs = ps.executeQuery();
+
+			if(rs.next()) {
+				//				this.id = id;
+				//				this.savings = savings;
+				//				this.balance = balance;
+				//				this.owner_id = owner_id;				
+
+				int id = rs.getInt("id");
+				boolean savings = rs.getBoolean("savings");
+				double balance = rs.getDouble("balance");
+				int owner_id = rs.getInt("owner_id");
+			return new Account(id, savings, balance, owner_id);}
+			
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public boolean updateAccount(int id, int aid, Account aChanged) {
+		String sql = "update accounts set savings = ?, balance = ? where id = ?";
+		
+		try(Connection conn = cu.getConnection()){
+			if ( getSpecAccount(id, aid) == null){
+				return false;
+			}
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setBoolean(1, aChanged.isSavings());
+			ps.setDouble(2, aChanged.getBalance());
+			ps.setInt(3, aid);
+			
+			ps.executeUpdate();
+			return true;
+			
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}return false;
+		
+		
+		
 	}	
 }//file
 
