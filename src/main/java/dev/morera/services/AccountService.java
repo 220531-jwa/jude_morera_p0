@@ -18,5 +18,11 @@ public class AccountService {
 		
 		
 	}
+
+	public Account createAccount(Account accountFromReqBody) {
+
+		Account createdAccount = accountDAO.createAccount(accountFromReqBody);
+		return createdAccount;
+	}
 	
 }

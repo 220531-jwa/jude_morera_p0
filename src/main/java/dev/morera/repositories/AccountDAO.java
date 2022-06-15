@@ -85,6 +85,37 @@ public class AccountDAO {
 			e.printStackTrace();
 		return null;
 		}
+	}
+
+	public Account createAccount(Account a) {
+
+		String sql = "insert into Accounts values (default, ?, ?, ?) returning *";
+		
+		try(Connection conn = cu.getConnection()){
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setBoolean(1, a.isSavings());
+			ps.setDouble(2, a.getBalance());
+			ps.setInt(3, a.getOwner_id());
+			
+			System.out.println(ps);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			if(rs.next()) {
+				return new Account(
+						rs.getInt("id"),
+						rs.getBoolean("savings"),
+						rs.getDouble("balance"),
+						rs.getInt("owner_id")
+						);
+			}
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return null;
 	}	
 }//file
 

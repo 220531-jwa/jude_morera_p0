@@ -59,12 +59,13 @@ public class Account {
 		this.owner_id = owner_id;
 	}
 
-
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return super.toString();
+		return "Account [id=" + id + ", savings=" + savings + ", balance=" + balance + ", owner_id=" + owner_id + "]";
 	}
+
+
+
 	
 	
 	

@@ -57,12 +57,16 @@ public class JavalinRunner {
 					//patch(ClientController::updateClient);
 					
 					path("/accounts", ()->{
-						get(AccountController::getAccountByID);
+						get(AccountController::getAccountsFromClient);
+						
 					});
 				});
 			});
-			path("accounts", () -> {
+			//THIS IS WITHOUT PRECEDING CLIENTS
+			path("/accounts", () -> {
 				get(AccountController::getAllAccounts);
+				post(AccountController::createNewAccount);
+				
 			});
 		});
 		//one method in accountService that checks if withdrawal/deposit
