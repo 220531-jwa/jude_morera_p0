@@ -38,7 +38,7 @@ public class ClientService {
 		
 	}
 
-	public boolean updateClient(int id,Client cChanged) {
+	public Client updateClient(int id,Client cChanged) {
 		return(clientDAO.updateClient(id, cChanged));
 		
 	}

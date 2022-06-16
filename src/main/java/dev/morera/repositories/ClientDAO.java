@@ -114,13 +114,13 @@ public class ClientDAO {
 		return false;
 	}
 
-	public  boolean updateClient(int id, Client cChanged) {
-		String sql = "update clients set username = ?, pass_word = ? where id = ?";
+	public  Client updateClient(int id, Client cChanged) {
+		String sql = "update clients set username = ?, pass_word = ? where id = ? returning *";
 		
 		try(Connection conn = cu.getConnection()){
 			
 			if (getClientById(id) == null) {
-				return false;
+				return null;
 			}
 			
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -128,14 +128,20 @@ public class ClientDAO {
 			ps.setString(2, cChanged.getpass_word());
 			ps.setInt(3, id);
 			
-			ps.executeUpdate();
-			return true;
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return new Client(
+						rs.getInt("id"),
+						rs.getString("username"),
+						rs.getString("pass_word")
+						);
+			}
 			
 			
 			
 		}catch(SQLException e){
 			e.printStackTrace();
-		}return false;
+		}return null;
 	}
 	
 	

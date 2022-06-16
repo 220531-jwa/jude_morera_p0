@@ -154,15 +154,16 @@ public class AccountController {
 				Account acc =	as.singleMath(action, id, aid);
 				if (acc.getId() == 0 && acc.getOwner_id() == 0 ) {
 					ctx.status(422);
+					ctx.json("Not enough money!");
 					//ctx.json(acc)
 				}
 				else if (acc != null) {
 					ctx.json(acc);
 					ctx.status(200);
 				}
-				//				else {
-				//					ctx.status(404);
-				//				}
+
+			}
+			else {ctx.status(404);
 			}
 		}
 
@@ -183,16 +184,16 @@ public class AccountController {
 			c = cs.getClientById(id);
 			if(c != null){
 				String action = ctx.body();
-				
+
 				List<Account> accs = as.transferMath(action, id, aid, said);
-				
+
 				for (Account a : accs) { //for troubleshooting
 					System.out.println(a);
 				}
-				
+
 				System.out.println(accs.get(0).getId() == 0); //also troubleshooting
 				System.out.println(accs.get(0).getOwner_id() == 0);
-				
+
 				if((accs.get(0).getId() == 0 )&& (accs.get(0).getOwner_id() == 0 )) {
 					ctx.status(422);
 					ctx.json("not enough money!");
@@ -207,7 +208,7 @@ public class AccountController {
 			e.printStackTrace();
 			ctx.status(404);
 		}
-		
+
 	}//transfer
 
 	//	public void accountGetter(Context ctx) {

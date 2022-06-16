@@ -65,8 +65,10 @@ public class ClientController {
 		
 		
 		//System.out.println("updateClient -= " + cChanged);
-		if(cs.updateClient(id, cChanged)) {
+		Client c = cs.updateClient(id, cChanged);
+		if(c != null) {
 			ctx.status(201);
+			ctx.json(c);
 		}
 		else {
 			ctx.status(404);
