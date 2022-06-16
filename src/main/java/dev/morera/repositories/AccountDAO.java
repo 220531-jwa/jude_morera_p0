@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dev.morera.models.Account;
-
+import dev.morera.models.Client;
 import dev.morera.utils.ConnectionUtility;
 
 public class AccountDAO {
@@ -197,7 +197,56 @@ public class AccountDAO {
 		
 		
 		
+	}
+
+	public boolean deleteAccount(int id,int aid) {
+		String sql = "delete from accounts where id = ?";
+		try (Connection conn = cu.getConnection()){
+			
+			if (getSpecAccount(id, aid)==null) {
+				return false;
+			}
+			
+			PreparedStatement ps = conn.prepareStatement(sql);
+			
+			ps.setInt(1, aid); //because these are primary, rest should be irrelevant
+			ps.execute();
+			return true;
+			}catch(SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
 	}	
+	
+	public Account addMoney (int id, int aid, String[] parsedAction) {
+		String sql = "update accounts set balance = balance + ? where id = ? returning *";
+		
+		try(Connection conn = cu.getConnection()){
+			String cleaned = parsedAction[1].replace("-", "");
+			double maths = Double.parseDouble(cleaned);
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setDouble(1, maths);
+			ps.setInt(2, aid);
+			
+			
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return new Account(
+						rs.getInt("id"),
+						rs.getBoolean("savings"),
+						rs.getDouble("balance"),
+						rs.getInt("owner_id")
+						);
+			}
+			else {return null;}
+		}catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return null;
+	}
+	
 }//file
 
 

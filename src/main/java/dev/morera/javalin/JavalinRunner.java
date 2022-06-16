@@ -17,13 +17,13 @@ package dev.morera.javalin;
 
 -GET /clients/7/accounts => get all accounts for client 7 return 404 if no client exists
 
-GET /clients/7/accounts?amountLessThan=2000&amountGreaterThan400 => get all accounts for client 7 between 400 and 2000 return 404 if no client exists
+-GET /clients/7/accounts?amountLessThan=2000&amountGreaterThan400 => get all accounts for client 7 between 400 and 2000 return 404 if no client exists
 
 -GET /clients/9/accounts/4 => get account 4 for client 9 return 404 if no account or client exists
 
 -PUT /clients/10/accounts/3 => update account with the id 3 for client 10 return 404 if no account or client exists
 
-DELETE /clients/15/accounts/6 => delete account 6 for client 15 return 404 if no account or client exists
+-DELETE /clients/15/accounts/6 => delete account 6 for client 15 return 404 if no account or client exists
 
 PATCH /clients/17/accounts/12 => Withdraw/deposit given amount (Body: {"deposit":500} or {"withdraw":250} return 404 if no account or client exists return 422 if insufficient funds
 
@@ -34,6 +34,8 @@ PATCH /clients/12/accounts/7/transfer/8 => transfer funds from account 7 to acco
 
 import io.javalin.Javalin;
 import static io.javalin.apibuilder.ApiBuilder.*;
+
+
 
 import dev.morera.controllers.AccountController;
 import dev.morera.controllers.ClientController;
@@ -62,6 +64,8 @@ public class JavalinRunner {
 						path("/{aid}", () ->{
 							get(AccountController::getSpecAccount);
 							put(AccountController::updateSpecAccount);
+							delete(AccountController::deleteSpecAccount);
+							patch(AccountController::changeBalance);
 
 						});
 					});
@@ -79,5 +83,7 @@ public class JavalinRunner {
 		 * 
 		 */
 	}
+
+	
 
 }

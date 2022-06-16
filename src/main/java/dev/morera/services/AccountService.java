@@ -34,4 +34,25 @@ public class AccountService {
 		return accountDAO.updateAccount(id, aid, aChanged);
 	}
 	
+	public boolean deleteAccount(int id, int aid) {
+		return accountDAO.deleteAccount(id, aid);
+	}
+	
+	public Account singleMath(String action, int id, int aid) {
+		
+		if (action == null) {
+			return null;
+		}
+		action = action.replaceAll("[{}\"\r\n ]", "");
+		String[] splited = action.split(":");
+
+		System.out.println(splited[0].toLowerCase().equals("deposit"));
+		if (splited[0].toLowerCase().equals("deposit"))
+		
+		{
+			return accountDAO.addMoney(id, aid, splited);
+		}
+				return null;
+	}
+	
 }
