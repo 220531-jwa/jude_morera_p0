@@ -14,7 +14,7 @@ public class AccountController {
 	private static ClientService cs = new ClientService();
 
 	public static void getAllAccounts(Context ctx) {
-		System.out.println("COOL");
+		//System.out.println("COOL");
 		ctx.status(200);
 		List<Account> accs = as.getAllAccounts();
 		ctx.json(accs);
@@ -25,7 +25,7 @@ public class AccountController {
 		//Client c = null;
 		String greater = ctx.queryParam("amountGreaterThan");
 		String lesser = ctx.queryParam("amountLessThan");
-		System.out.println(greater + lesser);
+		//	System.out.println(greater + lesser);
 
 		//		if (ctx.queryParam() != null) {
 		//			
@@ -150,20 +150,65 @@ public class AccountController {
 			if(c != null) {
 				int aid = Integer.parseInt(ctx.pathParam("aid"));
 				String action = ctx.body();
-				System.out.println(action);
-			Account acc =	as.singleMath(action, id, aid);
-				ctx.json(acc);
-				ctx.status(200);
+				//System.out.println(action);
+				Account acc =	as.singleMath(action, id, aid);
+				if (acc.getId() == 0 && acc.getOwner_id() == 0 ) {
+					ctx.status(422);
+					//ctx.json(acc)
+				}
+				else if (acc != null) {
+					ctx.json(acc);
+					ctx.status(200);
+				}
+				//				else {
+				//					ctx.status(404);
+				//				}
 			}
 		}
-		
-		 catch (Exception e) {
-			
+
+		catch (Exception e) {
+
 			e.printStackTrace();
 			ctx.status(404);
 		}
 	}
 
+	public static void transferMoney(Context ctx) {
+
+		int id = Integer.parseInt(ctx.pathParam("id"));
+		int aid = Integer.parseInt(ctx.pathParam("aid"));
+		int said = Integer.parseInt(ctx.pathParam("said"));
+		try {
+			Client c = null;
+			c = cs.getClientById(id);
+			if(c != null){
+				String action = ctx.body();
+				
+				List<Account> accs = as.transferMath(action, id, aid, said);
+				
+				for (Account a : accs) { //for troubleshooting
+					System.out.println(a);
+				}
+				
+				System.out.println(accs.get(0).getId() == 0); //also troubleshooting
+				System.out.println(accs.get(0).getOwner_id() == 0);
+				
+				if((accs.get(0).getId() == 0 )&& (accs.get(0).getOwner_id() == 0 )) {
+					ctx.status(422);
+					ctx.json("not enough money!");
+				}
+				else {
+					ctx.status(200);
+					ctx.json(accs);
+				}
+			}
+		}//try
+		catch(Exception e) {
+			e.printStackTrace();
+			ctx.status(404);
+		}
+		
+	}//transfer
 
 	//	public void accountGetter(Context ctx) {
 	//String finda = ctx.queryParam(amountlessthan)

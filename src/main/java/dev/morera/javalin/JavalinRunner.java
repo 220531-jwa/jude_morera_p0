@@ -25,7 +25,7 @@ package dev.morera.javalin;
 
 -DELETE /clients/15/accounts/6 => delete account 6 for client 15 return 404 if no account or client exists
 
-PATCH /clients/17/accounts/12 => Withdraw/deposit given amount (Body: {"deposit":500} or {"withdraw":250} return 404 if no account or client exists return 422 if insufficient funds
+-PATCH /clients/17/accounts/12 => Withdraw/deposit given amount (Body: {"deposit":500} or {"withdraw":250} return 404 if no account or client exists return 422 if insufficient funds
 
 PATCH /clients/12/accounts/7/transfer/8 => transfer funds from account 7 to account 8 (Body: {"amount":500}) return 404 if no client or either account exists return 422 if insufficient funds
  */
@@ -66,7 +66,12 @@ public class JavalinRunner {
 							put(AccountController::updateSpecAccount);
 							delete(AccountController::deleteSpecAccount);
 							patch(AccountController::changeBalance);
-
+							
+							path("/transfer", ()->{
+								path("{said}", ()->{
+									patch(AccountController::transferMoney);	
+								});
+							});
 						});
 					});
 				});

@@ -37,7 +37,7 @@ public class AccountDAO {
 				int owner_id = rs.getInt("owner_id");
 
 				Account a = new Account(id, savings, balance, owner_id);
-				System.out.println(a);
+				//System.out.println(a);
 				accounts.add(a);
 
 
@@ -49,7 +49,7 @@ public class AccountDAO {
 			return null;
 		}
 	}
-	
+
 	public List<Account> getAccountsFromClient(int passedId, String greater, String lesser){
 		List<Account> accounts = new ArrayList<>();
 		String sql  = "select * from accounts where owner_id = ?";
@@ -61,16 +61,16 @@ public class AccountDAO {
 		if (lesser !=null ) {
 			sql += "and balance < ?";
 		}
-		
-//		else {
-//		 sql = "select * from accounts where owner_id = ?";
-//		}
-		
+
+		//		else {
+		//		 sql = "select * from accounts where owner_id = ?";
+		//		}
+
 		try (Connection conn = cu.getConnection()){
 
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, passedId);
-				
+
 			if (greater != null ) {
 				Double greaterSQL = Double.parseDouble(greater);
 				ps.setDouble(2, greaterSQL);
@@ -84,7 +84,7 @@ public class AccountDAO {
 				}
 			}//less
 
-			
+
 			ResultSet rs = ps.executeQuery();
 
 			while(rs.next()) {
@@ -99,7 +99,7 @@ public class AccountDAO {
 				int owner_id = rs.getInt("owner_id");
 
 				Account a = new Account(id, savings, balance, owner_id);
-				System.out.println(a);
+//				System.out.println(a);
 				accounts.add(a);
 
 
@@ -109,26 +109,26 @@ public class AccountDAO {
 		}//end try
 		catch(SQLException e) {
 			e.printStackTrace();
-		return null;
+			return null;
 		}
-		
-		
+
+
 	}
 
 	public Account createAccount(int passedId, Account a) {
 
 		String sql = "insert into Accounts values (default, ?, ?, ?) returning *";
-		
+
 		try(Connection conn = cu.getConnection()){
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setBoolean(1, a.isSavings());
 			ps.setDouble(2, a.getBalance());
 			ps.setInt(3, passedId);
-			
-			System.out.println(ps);
-			
+
+//			System.out.println(ps);
+
 			ResultSet rs = ps.executeQuery();
-			
+
 			if(rs.next()) {
 				return new Account(
 						rs.getInt("id"),
@@ -137,24 +137,24 @@ public class AccountDAO {
 						rs.getInt("owner_id")
 						);
 			}
-			
+
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 		return null;
 	}
 
 	public Account getSpecAccount(int passedId, int passedAid) {
-		
+
 		String sql = "select * from accounts where accounts.owner_id = ? and accounts.id = ? ";
-		
+
 		try (Connection conn = cu.getConnection()){
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setInt(1, passedId);
 			ps.setInt(2, passedAid);
-			
+
 			ResultSet rs = ps.executeQuery();
 
 			if(rs.next()) {
@@ -167,8 +167,8 @@ public class AccountDAO {
 				boolean savings = rs.getBoolean("savings");
 				double balance = rs.getDouble("balance");
 				int owner_id = rs.getInt("owner_id");
-			return new Account(id, savings, balance, owner_id);}
-			
+				return new Account(id, savings, balance, owner_id);}
+
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -177,7 +177,7 @@ public class AccountDAO {
 
 	public boolean updateAccount(int id, int aid, Account aChanged) {
 		String sql = "update accounts set savings = ?, balance = ? where id = ?";
-		
+
 		try(Connection conn = cu.getConnection()){
 			if ( getSpecAccount(id, aid) == null){
 				return false;
@@ -186,49 +186,50 @@ public class AccountDAO {
 			ps.setBoolean(1, aChanged.isSavings());
 			ps.setDouble(2, aChanged.getBalance());
 			ps.setInt(3, aid);
-			
+
 			ps.executeUpdate();
 			return true;
-			
-			
+
+
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}return false;
-		
-		
-		
+
+
+
 	}
 
 	public boolean deleteAccount(int id,int aid) {
 		String sql = "delete from accounts where id = ?";
 		try (Connection conn = cu.getConnection()){
-			
+
 			if (getSpecAccount(id, aid)==null) {
 				return false;
 			}
-			
+
 			PreparedStatement ps = conn.prepareStatement(sql);
-			
+
 			ps.setInt(1, aid); //because these are primary, rest should be irrelevant
 			ps.execute();
 			return true;
-			}catch(SQLException e) {
-				e.printStackTrace();
-				return false;
-			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}	
-	
+
 	public Account addMoney (int id, int aid, String[] parsedAction) {
 		String sql = "update accounts set balance = balance + ? where id = ? returning *";
-		
+
 		try(Connection conn = cu.getConnection()){
 			String cleaned = parsedAction[1].replace("-", "");
 			double maths = Double.parseDouble(cleaned);
 			PreparedStatement ps = conn.prepareStatement(sql);
+//			System.out.println(ps);
 			ps.setDouble(1, maths);
 			ps.setInt(2, aid);
-			
-			
+
+
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				return new Account(
@@ -242,11 +243,48 @@ public class AccountDAO {
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
 		return null;
 	}
-	
+
+	public Account subMoney(int id, int aid, String[] parsedAction) {
+		String sql = "update accounts set balance = balance - ? where id = ? returning *";
+		try(Connection conn = cu.getConnection()){
+
+			Account founder = getSpecAccount(id, aid);
+
+			String cleaned = parsedAction[1].replace("-", "");
+			double maths = Double.parseDouble(cleaned);
+
+			if (founder.getBalance() - maths < 0 ) {//zero will be reserved as invalid
+				return new Account(0,false,0,0);
+			}
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setDouble(1, maths);
+			ps.setInt(2, aid);
+			//System.out.println(ps);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return new Account(
+						rs.getInt("id"),
+						rs.getBoolean("savings"),
+						rs.getDouble("balance"),
+						rs.getInt("owner_id")
+						);
+			}
+
+
+
+
+		}//end try
+		catch (SQLException e) {
+		e.printStackTrace();
+		return null;
+	}
+	return null;
+
+}
+
+
 }//file
 
 
