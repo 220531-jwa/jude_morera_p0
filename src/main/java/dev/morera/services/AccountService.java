@@ -31,8 +31,9 @@ public class AccountService {
 		
 	}
 
-	public boolean updateAccount(int id, int aid, Account aChanged) {
-		return accountDAO.updateAccount(id, aid, aChanged);
+	public Account updateAccount(int id, int aid, Account aChanged) {
+		Account a = accountDAO.updateAccount(id, aid, aChanged);
+		return a;
 	}
 	
 	public boolean deleteAccount(int id, int aid) {

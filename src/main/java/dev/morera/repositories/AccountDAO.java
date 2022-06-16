@@ -158,11 +158,7 @@ public class AccountDAO {
 			ResultSet rs = ps.executeQuery();
 
 			if(rs.next()) {
-				//				this.id = id;
-				//				this.savings = savings;
-				//				this.balance = balance;
-				//				this.owner_id = owner_id;				
-
+			
 				int id = rs.getInt("id");
 				boolean savings = rs.getBoolean("savings");
 				double balance = rs.getDouble("balance");
@@ -175,25 +171,32 @@ public class AccountDAO {
 		return null;
 	}
 
-	public boolean updateAccount(int id, int aid, Account aChanged) {
-		String sql = "update accounts set savings = ?, balance = ? where id = ?";
+	public Account updateAccount(int id, int aid, Account aChanged) {
+		String sql = "update accounts set savings = ?, balance = ? where id = ? returning *";
 
 		try(Connection conn = cu.getConnection()){
 			if ( getSpecAccount(id, aid) == null){
-				return false;
+				return null;
 			}
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setBoolean(1, aChanged.isSavings());
 			ps.setDouble(2, aChanged.getBalance());
 			ps.setInt(3, aid);
 
-			ps.executeUpdate();
-			return true;
-
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				
+				return new Account(
+						rs.getInt("id"),
+						rs.getBoolean("savings"),
+						rs.getDouble("balance"),
+						rs.getInt("owner_id")
+						);
+			}
 
 		}catch(SQLException e) {
 			e.printStackTrace();
-		}return false;
+		}return null;
 
 
 

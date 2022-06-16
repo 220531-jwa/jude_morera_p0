@@ -96,11 +96,12 @@ public class AccountController {
 			if(c != null) {
 				int aid = Integer.parseInt(ctx.pathParam("aid"));
 				Account aChanged = ctx.bodyAsClass(Account.class);
-
-
-				if (as.updateAccount(id,aid,aChanged)) {
+				System.out.println(aChanged);
+				Account acc = as.updateAccount(id,aid,aChanged);
+				System.out.println(acc);
+				if (acc != null) {
 					ctx.status(200);
-					//ctx.json(acc);
+					ctx.json(acc);
 				}
 				else {
 					ctx.status(404);
@@ -182,7 +183,7 @@ public class AccountController {
 		try {
 			Client c = null;
 			c = cs.getClientById(id);
-			if(c != null){
+			if(c == null){ctx.status(404);}
 				String action = ctx.body();
 
 				List<Account> accs = as.transferMath(action, id, aid, said);
@@ -191,18 +192,22 @@ public class AccountController {
 					System.out.println(a);
 				}
 
-				System.out.println(accs.get(0).getId() == 0); //also troubleshooting
-				System.out.println(accs.get(0).getOwner_id() == 0);
-
+//				System.out.println(accs.get(0).getId() == 0); //also troubleshooting
+//				System.out.println(accs.get(1).getId() == 0); //also troubleshooting
+				//System.out.println(accs.get(0).getOwner_id() == 0);
+				if(accs.size()!=2){
+					ctx.status(404);
+				}
 				if((accs.get(0).getId() == 0 )&& (accs.get(0).getOwner_id() == 0 )) {
 					ctx.status(422);
 					ctx.json("not enough money!");
 				}
+				
 				else {
 					ctx.status(200);
 					ctx.json(accs);
 				}
-			}
+			
 		}//try
 		catch(Exception e) {
 			e.printStackTrace();
