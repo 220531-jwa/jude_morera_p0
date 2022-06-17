@@ -48,7 +48,7 @@ public class AccountService {
 		action = action.replaceAll("[{}\"\r\n ]", "");
 		String[] splited = action.split(":");
 
-		//System.out.println(splited[0].toLowerCase().equals("deposit"));
+
 		if (splited[0].toLowerCase().equals("deposit"))
 		
 		{
@@ -74,11 +74,10 @@ public class AccountService {
 		if (splited[0].toLowerCase().equals("amount")) {
 			List<Account> accounts = new ArrayList<>();
 			
-			//Account feedback = accountDAO.subMoney(id, aid, splited);
-			//if
+
 						
 			accounts.add(accountDAO.subMoney(id, aid, splited));
-			//System.out.println(accounts.get(0));
+
 			if(accounts.get(0).getId() == 0 && accounts.get(0).getOwner_id() == 0 ) {
 				return accounts;
 			}

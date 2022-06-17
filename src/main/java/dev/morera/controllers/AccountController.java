@@ -14,7 +14,7 @@ public class AccountController {
 	private static ClientService cs = new ClientService();
 
 	public static void getAllAccounts(Context ctx) {
-		//System.out.println("COOL");
+
 		ctx.status(200);
 		List<Account> accs = as.getAllAccounts();
 		ctx.json(accs);
@@ -25,11 +25,7 @@ public class AccountController {
 		//Client c = null;
 		String greater = ctx.queryParam("amountGreaterThan");
 		String lesser = ctx.queryParam("amountLessThan");
-		//	System.out.println(greater + lesser);
-
-		//		if (ctx.queryParam() != null) {
-		//			
-		//		}
+		
 
 		try {
 			Client c = null;
@@ -151,12 +147,12 @@ public class AccountController {
 			if(c != null) {
 				int aid = Integer.parseInt(ctx.pathParam("aid"));
 				String action = ctx.body();
-				//System.out.println(action);
+			
 				Account acc =	as.singleMath(action, id, aid);
 				if (acc.getId() == 0 && acc.getOwner_id() == 0 ) {
 					ctx.status(422);
 					ctx.json("Not enough money!");
-					//ctx.json(acc)
+			
 				}
 				else if (acc != null) {
 					ctx.json(acc);
@@ -192,9 +188,7 @@ public class AccountController {
 					System.out.println(a);
 				}
 
-//				System.out.println(accs.get(0).getId() == 0); //also troubleshooting
-//				System.out.println(accs.get(1).getId() == 0); //also troubleshooting
-				//System.out.println(accs.get(0).getOwner_id() == 0);
+
 				if(accs.size()!=2){
 					ctx.status(404);
 				}
@@ -215,15 +209,5 @@ public class AccountController {
 		}
 
 	}//transfer
-
-	//	public void accountGetter(Context ctx) {
-	//String finda = ctx.queryParam(amountlessthan)
-	//String req = ctx.body(); string builder? ;)
-
-	/*body as class?
-	 * include withdraw and deposit as double vars?
-	 */
-	//	}
-
 
 }//file

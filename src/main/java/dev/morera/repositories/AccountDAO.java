@@ -37,7 +37,7 @@ public class AccountDAO {
 				int owner_id = rs.getInt("owner_id");
 
 				Account a = new Account(id, savings, balance, owner_id);
-				//System.out.println(a);
+
 				accounts.add(a);
 
 
@@ -99,7 +99,7 @@ public class AccountDAO {
 				int owner_id = rs.getInt("owner_id");
 
 				Account a = new Account(id, savings, balance, owner_id);
-//				System.out.println(a);
+
 				accounts.add(a);
 
 
@@ -125,7 +125,6 @@ public class AccountDAO {
 			ps.setDouble(2, a.getBalance());
 			ps.setInt(3, passedId);
 
-//			System.out.println(ps);
 
 			ResultSet rs = ps.executeQuery();
 
@@ -228,7 +227,7 @@ public class AccountDAO {
 			String cleaned = parsedAction[1].replace("-", "");
 			double maths = Double.parseDouble(cleaned);
 			PreparedStatement ps = conn.prepareStatement(sql);
-//			System.out.println(ps);
+
 			ps.setDouble(1, maths);
 			ps.setInt(2, aid);
 
@@ -264,7 +263,7 @@ public class AccountDAO {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setDouble(1, maths);
 			ps.setInt(2, aid);
-			//System.out.println(ps);
+
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				return new Account(

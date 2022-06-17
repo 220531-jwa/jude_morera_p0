@@ -75,7 +75,7 @@ public class ClientDAO {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, c.getUsername());
 			ps.setString(2, c.getpass_word());
-			System.out.println(ps);
+
 			ResultSet rs = ps.executeQuery();
 
 			if (rs.next()) {

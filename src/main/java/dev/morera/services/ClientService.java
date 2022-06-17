@@ -5,8 +5,6 @@ import java.util.List;
 import dev.morera.models.Client;
 import dev.morera.repositories.ClientDAO;
 
-//todo: check if owned???
-
 
 public class ClientService {
 
@@ -18,10 +16,7 @@ public class ClientService {
 
 	public Client getClientById(int id) throws Exception {
 		Client c = clientDAO.getClientById(id);
-		
-//		if (c == null) {
-//			throw new Exception ("Client not found");
-//		}
+
 		
 		
 		return c;

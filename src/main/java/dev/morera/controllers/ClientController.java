@@ -62,9 +62,7 @@ public class ClientController {
 		int id = Integer.parseInt(ctx.pathParam("id"));
 		Client cChanged = ctx.bodyAsClass(Client.class); //unmarshalling
 		
-		
-		
-		//System.out.println("updateClient -= " + cChanged);
+
 		Client c = cs.updateClient(id, cChanged);
 		if(c != null) {
 			ctx.status(201);

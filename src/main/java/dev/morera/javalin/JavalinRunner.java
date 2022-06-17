@@ -56,7 +56,7 @@ public class JavalinRunner {
 					get(ClientController::getClientByID);
 					delete(ClientController::deleteClient);
 					put(ClientController::updateClient);
-					//patch(ClientController::updateClient);
+					
 
 					path("/accounts", ()->{
 						get(AccountController::getAccountsFromClient);
@@ -83,10 +83,7 @@ public class JavalinRunner {
 
 			});
 		});
-		//one method in accountService that checks if withdrawal/deposit
-		/* TODO: logics
-		 * 
-		 */
+		
 	}
 
 	
